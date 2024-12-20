@@ -19,7 +19,7 @@ import {
   SigninMailBox,
   SigninPwBox,
   SigninTitle,
-} from "./signin.styled";
+} from "./SignIn.styled";
 
 function SignIn() {
   const [isLoginFailed, setIsLoginFailed] = useState(false); // 로그인 실패 상태
