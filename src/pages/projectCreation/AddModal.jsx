@@ -8,24 +8,65 @@ import {
   FindDiv,
   SearchMember,
   SearchProfile,
+  FindUserData,
 } from "./AddModal.styles";
 import axios from "axios";
+import Swal from "sweetalert2";
 
-const AddModal = ({ isOpen, closeModal, addTeamMember, setTeamMembers }) => {
+const AddModal = ({
+  isOpen,
+  closeModal,
+  addTeamMember,
+  teamMembers,
+  setTeamMembers,
+}) => {
   const [memberList, setMemberList] = useState([]);
-  const [userInfo, setUserInfo] = useState(null);
+  const [userInfo, setUserInfo] = useState([]);
   const [searchInput, setSearchInput] = useState("");
 
   if (!isOpen) return null;
 
-  const handleAddMemberButton = async () => {
-    console.log(userInfo);
+  const handleAddMemberButton = (e) => {
+    const clickUserData = userInfo.filter((item) => {
+      return item.userNo === e;
+    });
+    const userNickname = clickUserData[0].nickname.substring(
+      0,
+      clickUserData[0].nickname?.indexOf("#"),
+    );
+    // const checkNickname = memberList.filter((item) => {
+    //   return item === userNickname;
+    // });
+    console.log(userNickname);
+    // console.log(checkNickname);
 
-    alert(`${userInfo.nickname} 유저를 추가했습니다`);
-
-    setTeamMembers((prev) => [...prev, userInfo.userNo]);
-    setMemberList((prev) => [...prev, userInfo.nickname]);
-    setSearchInput("");
+    if (
+      memberList.filter((item) => {
+        return item === userNickname;
+      })
+    ) {
+      alert("이미 존재하는 사용자입니다");
+    } else {
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "center",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+        },
+      });
+      Toast.fire({
+        icon: "success",
+        title: `${userNickname}님을 추가했어요`,
+      });
+      setTeamMembers((prev) => [...prev, clickUserData[0].userNo]);
+      setMemberList((prev) => [...prev, userNickname]);
+      setSearchInput("");
+      setUserInfo([]);
+    }
   };
 
   const handleSearch = async () => {
@@ -35,10 +76,24 @@ const AddModal = ({ isOpen, closeModal, addTeamMember, setTeamMembers }) => {
       const res = await axios.get(
         `/api/project/search-user/${seacrchNickname}`,
       );
-      console.log(res);
-
-      if (res.status === 200) {
-        setUserInfo(res.data.user);
+      if (res.data.code === "OK") {
+        setUserInfo(res.data.userList);
+      } else {
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "center",
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          },
+        });
+        Toast.fire({
+          icon: "error",
+          title: "해당 사용자를 찾을 수 없습니다",
+        });
       }
     } catch (error) {
       console.error("오류 발생:", error);
@@ -46,20 +101,20 @@ const AddModal = ({ isOpen, closeModal, addTeamMember, setTeamMembers }) => {
     }
   };
 
-  const handleKeyPress = async (e) => {
-    if (e.key === "Enter") {
-      await handleSearch();
-    }
-  };
+  // const handleKeyPress = async (e) => {
+  //   if (e.key === "Enter") {
+  //     await handleSearch();
+  //   }
+  // };
 
   return (
     <ModalOverlay onClick={closeModal}>
       <ModalContent onClick={(e) => e.stopPropagation()}>
         <ModalInput
-          placeholder="닉네임 또는 이메일로 검색해보세요"
+          placeholder="닉네임을 검색해보세요"
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
-          onKeyDown={() => handleKeyPress()}
+          // onKeyDown={() => handleKeyPress()}
         />
         <SearchMember
           onClick={() => {
@@ -69,19 +124,38 @@ const AddModal = ({ isOpen, closeModal, addTeamMember, setTeamMembers }) => {
         <h2>구성원</h2>
         {/* 사용자 정보 출력 부분 */}
         {userInfo && (
-          <FindDiv
-            onClick={() => {
-              handleAddMemberButton();
-            }}
-          >
-            {userInfo?.pic === null ? (
-              <img src="public/profile8.jpg" />
-            ) : (
-              <img
-                src={`${import.meta.env.VITE_BASE_URL}/pic/user/${userInfo.userNo}/${userInfo.pic}`}
-              />
-            )}
-            <span>{userInfo?.nickname}</span>
+          <FindDiv>
+            {userInfo.map((item, index) => {
+              console.log(item);
+
+              if (item.pic === null) {
+                return (
+                  <FindUserData
+                    key={index}
+                    onClick={() => {
+                      handleAddMemberButton(item.userNo);
+                    }}
+                  >
+                    <img src="/default_profile.jpg" alt="Default Profile" />
+                    <span>{item.nickname}</span>
+                  </FindUserData>
+                );
+              } else {
+                return (
+                  <FindUserData
+                    key={index}
+                    onClick={() => {
+                      handleAddMemberButton(item.userNo);
+                    }}
+                  >
+                    <img
+                      src={`${import.meta.env.VITE_BASE_URL}/pic/user/${item.userNo}/${item.pic}`}
+                    />
+                    <span>{item.nickname}</span>
+                  </FindUserData>
+                );
+              }
+            })}
           </FindDiv>
         )}
         <div>

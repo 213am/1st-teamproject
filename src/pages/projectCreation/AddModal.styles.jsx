@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import { FaSistrix } from "react-icons/fa6";
+import "../../utils/font.css";
 
 const alignment = `
   display: flex;
@@ -73,6 +74,7 @@ export const ModalText = styled.textarea`
   background-color: #f4f4f4;
   height: 250px;
   resize: none;
+  font-family: "GmarketSansMedium";
 
   display: block;
   margin: auto; /* 추가: 텍스트 영역을 부모 내에서 자동으로 중앙 정렬 */
@@ -99,10 +101,12 @@ export const ModalInput = styled.input`
 export const FindDiv = styled.div`
   position: absolute;
   display: flex;
+  flex-direction: column;
   width: 400px;
   border-radius: 0 0 5px 5px;
   border: 2px solid #f4f4f4;
   background-color: #f4f4f4;
+  font-family: "GmarketSansMedium";
 
   left: 50px;
   top: 60px;
@@ -111,33 +115,38 @@ export const FindDiv = styled.div`
   align-items: center;
   cursor: pointer;
   z-index: 99;
+`;
+
+export const FindUserData = styled.div`
+  display: flex;
+  width: 100%;
+  height: 50px;
+  padding-left: 20px;
+  justify-content: flex-start;
+  align-items: center;
+  font-family: "GmarketSansMedium";
 
   &:hover {
-    border: 2px solid #999999;
-    background-color: rgb(153, 153, 153);
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    background-color: rgba(0, 0, 0, 0.2);
   }
 
   img {
     display: flex;
     margin-left: 5px;
     display: inline-block;
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
     border-radius: 50px;
     background-color: #c0c0c0;
+    border: 1px solid rgba(0, 0, 0, 0.1);
   }
-  div {
-    margin-left: 5px;
-    width: 30px;
-    height: 30px;
-    background-color: #c0c0c0;
-    border-radius: 15px;
-    font-size: 0;
-  }
+
   span {
     padding: 10px;
   }
 `;
+
 export const SearchMember = styled(FaSistrix)`
   position: absolute;
   display: flex;

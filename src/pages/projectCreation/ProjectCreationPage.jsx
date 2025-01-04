@@ -196,6 +196,7 @@ function ProjectCreationPage() {
         isOpen={isAddModalOpen}
         closeModal={closeAddModal}
         addTeamMember={addTeamMember}
+        teamMembers={teamMembers}
         setTeamMembers={setTeamMembers}
       />
     </ProjectCreationForm>
