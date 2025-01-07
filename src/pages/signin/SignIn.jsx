@@ -185,7 +185,21 @@ function SignIn() {
     }),
     onSubmit: (values) => {
       console.log("제출된 비밀번호:", values);
-      alert("비밀번호가 성공적으로 재설정되었습니다.");
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "center",
+        showConfirmButton: false,
+        timer: 1000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+        },
+      });
+      Toast.fire({
+        icon: "success",
+        title: "비밀번호가 성공적으로 재설정되었습니다.",
+      });
       setShowPwPopup(false); // 팝업 닫기
     },
   });

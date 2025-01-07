@@ -237,9 +237,21 @@ function MyPageEdit() {
       console.error("🚨 정보 저장 오류:", error);
       if (error.response) {
         console.error("🚨 서버 응답 데이터:", error.response.data);
-        alert(
-          `서버 오류 발생: ${error.response.data.message || "알 수 없는 오류"}`,
-        );
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "center",
+          showConfirmButton: false,
+          timer: 1000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          },
+        });
+        Toast.fire({
+          icon: "error",
+          title: `서버 오류 발생: ${error.response.data.message || "알 수 없는 오류"}`,
+        });
       } else {
         const Toast = Swal.mixin({
           toast: true,

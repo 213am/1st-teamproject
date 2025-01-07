@@ -63,7 +63,7 @@ function MyPage() {
     try {
       const response = await axios.get(endpoint, {
         params: {
-          targetUserNo: clickUserNo || signedUserNo,
+          targetUserNo: location.state?.targetUserNo || signedUserNo,
           signedUserNo: signedUserNo,
         },
       });
@@ -83,7 +83,7 @@ function MyPage() {
           pic: response.data.pic || "/default_profile.jpg",
           userId: response.data.userId || "",
           userStatusMessage: response.data.statusMessage || "",
-          myInfo: response.data.targetUserNo,
+          myInfo: response.data.myInfo,
         });
       } else {
         console.error("Failed to fetch user data:", response.data);
